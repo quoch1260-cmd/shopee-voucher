@@ -63,6 +63,9 @@ def parse_vouchers(text: str):
     if not text:
         return []
 
+    # Bot trả lời có bọc chữ đậm (**...**) và code trong dấu ` — bỏ hết cho dễ tách
+    text = text.replace("*", "").replace("`", "")
+
     blocks = re.split(r"─{3,}", text)
     results = []
 
