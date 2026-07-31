@@ -1,0 +1,44 @@
+# ==========================================================
+#  File này cần đặt đúng đường dẫn trong repository GitHub của bạn:
+#  .github/workflows/crawl.yml
+#
+#  Tác dụng: tự động chạy crawler.py mỗi 20 phút, cập nhật data.json
+#  và tự "lưu" (commit) kết quả mới vào repo — không cần bạn động tay.
+# ==========================================================
+
+name: Cập nhật mã giảm giá
+
+on:
+  schedule:
+    - cron: "*/20 * * * *"   # chạy mỗi 20 phút
+  workflow_dispatch:          # cho phép bấm nút "Run workflow" chạy thủ công để test
+
+jobs:
+  crawl:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Tải mã nguồn repo
+        uses: actions/checkout@v4
+
+      - name: Cài Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Cài thư viện
+        run: pip install telethon
+
+      - name: Chạy crawler
+        env:
+          TELEGRAM_SESSION: ${{ secrets.TELEGRAM_SESSION }}
+          TG_API_ID: ${{ secrets.TG_API_ID }}
+          TG_API_HASH: ${{ secrets.TG_API_HASH }}
+        run: python crawler.py
+
+      - name: Lưu data.json mới vào repo
+        run: |
+          git config user.name "voucher-bot"
+          git config user.email "voucher-bot@users.noreply.github.com"
+          git add data.json
+          git diff --quiet --cached || git commit -m "Cập nhật mã mới"
+          git push
