@@ -31,7 +31,7 @@ API_ID = int(os.environ.get("TG_API_ID", "0"))
 API_HASH = os.environ.get("TG_API_HASH", "")
 BOT_USERNAME = "sfast_main_bot"   # tên bot cần hỏi mã
 COMMAND = "/checkvc"              # lệnh để bot trả về danh sách mã
-WAIT_SECONDS = 6                  # thời gian đợi bot trả lời sau khi gửi lệnh
+WAIT_SECONDS = 4                  # thời gian đợi mỗi lần kiểm tra (thử lại tối đa 6 lần)
 # -------------------------------------------------
 
 SESSION_NAME = "voucher_session"
@@ -39,12 +39,19 @@ OUTPUT_FILE = "data.json"
 
 
 def get_bot_reply(client) -> str:
-    """Gửi lệnh cho bot và lấy nội dung tin nhắn trả lời gần nhất của bot."""
-    client.send_message(BOT_USERNAME, COMMAND)
-    time.sleep(WAIT_SECONDS)
-    for msg in client.iter_messages(BOT_USERNAME, limit=5):
-        if not msg.out and msg.text:  # msg.out=True nghĩa là tin nhắn do mình gửi
-            return msg.text
+    """Gửi lệnh cho bot và lấy nội dung tin nhắn trả lời gần nhất của bot.
+    Thử kiểm tra nhiều lần trong lúc đợi, vì server chạy tự động có thể
+    phản hồi chậm hơn máy cá nhân."""
+    sent = client.send_message(BOT_USERNAME, COMMAND)
+    sent_time = sent.date
+
+    for attempt in range(6):  # thử tối đa 6 lần, mỗi lần cách nhau vài giây
+        time.sleep(WAIT_SECONDS)
+        for msg in client.iter_messages(BOT_USERNAME, limit=5):
+            if not msg.out and msg.text and msg.date > sent_time:
+                return msg.text
+        print(f"Chưa có phản hồi, thử lại lần {attempt + 1}...")
+
     return ""
 
 
