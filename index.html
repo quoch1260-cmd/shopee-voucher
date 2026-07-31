@@ -271,13 +271,17 @@
 
   function toDisplayFormat(raw) {
     // Chuyển dữ liệu thô từ data.json (do crawler tạo) sang định dạng web hiển thị
+    const parts = [];
+    if (raw.da_dung_percent != null) parts.push(`đã dùng ${raw.da_dung_percent}%`);
+    if (raw.phi_vnd) parts.push(`phí ${raw.phi_vnd}đ`);
     return {
       type: "toanshop",
       percent: raw.percent,
-      desc: `Mã số ${raw.ma_so}${raw.da_dung_percent != null ? ` · đã dùng ${raw.da_dung_percent}%` : ""}`,
+      desc: parts.join(" · "),
       code: raw.code,
       minOrder: "—",
-      expiresInHours: null
+      expiresInHours: null,
+      hanDung: raw.han_dung || null
     };
   }
 
@@ -317,7 +321,7 @@
           </div>
           <div class="desc">${v.desc}</div>
           <div class="meta">
-            ${v.expiresInHours != null ? `<span class="${expiring ? 'warn' : ''}">Còn <b>${v.expiresInHours}h</b></span>` : ''}
+            ${v.hanDung ? `<span>Hạn: <b>${v.hanDung}</b></span>` : ''}
           </div>
         </div>
         <div class="perf"></div>
