@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Săn Mã · Voucher Shopee</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+
+  :root{
+    --bg: #171512;
+    --bg-soft: #211d18;
+    --card: #262019;
+    --coral: #ff5a3c;
+    --coral-dim: #7a2e1f;
+    --gold: #ffb648;
+    --cream: #f3ede1;
+    --cream-dim: #a89d89;
+    --line: #3a332a;
+    --green: #4caf7d;
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+
+  body{
+    background:
+      radial-gradient(circle at 15% 0%, rgba(255,90,60,0.10), transparent 45%),
+      var(--bg);
+    color: var(--cream);
+    font-family: 'Space Grotesk', sans-serif;
+    min-height: 100vh;
+    padding: 32px 20px 80px;
+  }
+
+  .wrap{ max-width: 900px; margin: 0 auto; }
+
+  /* ---------- Header ---------- */
+  header{
+    display:flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 16px;
+    border-bottom: 1px dashed var(--line);
+    padding-bottom: 24px;
+    margin-bottom: 28px;
+  }
+  .eyebrow{
+    font-family:'Space Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--coral);
+    margin-bottom: 8px;
+  }
+  h1{
+    font-family: 'Archivo Black', sans-serif;
+    font-size: clamp(32px, 6vw, 52px);
+    line-height: 0.95;
+    letter-spacing: -0.01em;
+  }
+  h1 span{ color: var(--coral); }
+  .updated{
+    font-family:'Space Mono', monospace;
+    font-size: 12px;
+    color: var(--cream-dim);
+    text-align: right;
+  }
+  .live-dot{
+    display:inline-block; width:7px; height:7px; border-radius:50%;
+    background: var(--green); margin-right:6px;
+    box-shadow: 0 0 0 0 rgba(76,175,125,0.6);
+    animation: pulse 1.8s infinite;
+  }
+  @keyframes pulse{
+    0%{ box-shadow: 0 0 0 0 rgba(76,175,125,0.55); }
+    70%{ box-shadow: 0 0 0 7px rgba(76,175,125,0); }
+    100%{ box-shadow: 0 0 0 0 rgba(76,175,125,0); }
+  }
+
+  /* ---------- Filter tabs ---------- */
+  .tabs{
+    display:flex; gap: 10px; margin-bottom: 24px; flex-wrap: wrap;
+  }
+  .tab{
+    font-family:'Space Mono', monospace;
+    font-size: 12px;
+    padding: 8px 14px;
+    border: 1px solid var(--line);
+    border-radius: 100px;
+    color: var(--cream-dim);
+    cursor: pointer;
+    background: transparent;
+    transition: all .15s ease;
+    user-select: none;
+  }
+  .tab:hover{ border-color: var(--coral); color: var(--cream); }
+  .tab.active{
+    background: var(--coral);
+    border-color: var(--coral);
+    color: #1a0e08;
+    font-weight: 700;
+  }
+
+  /* ---------- Coupon cards ---------- */
+  .grid{ display:flex; flex-direction: column; gap: 14px; }
+
+  .coupon{
+    display:flex;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    overflow: hidden;
+    position: relative;
+    transition: border-color .15s ease, transform .15s ease;
+  }
+  .coupon:hover{ border-color: var(--coral-dim); transform: translateY(-1px); }
+  .coupon.expiring{ border-color: var(--coral); }
+
+  .coupon-main{
+    flex: 1;
+    padding: 18px 20px;
+    display:flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+  }
+
+  .coupon-top{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+
+  .tag{
+    font-family:'Space Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 4px;
+    background: rgba(255,90,60,0.12);
+    color: var(--coral);
+    border: 1px solid rgba(255,90,60,0.25);
+  }
+  .tag.freeship{ background: rgba(76,175,125,0.12); color: var(--green); border-color: rgba(76,175,125,0.3); }
+  .tag.shop{ background: rgba(255,182,72,0.12); color: var(--gold); border-color: rgba(255,182,72,0.3); }
+
+  .percent{
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 24px;
+    color: var(--cream);
+  }
+
+  .desc{ font-size: 13.5px; color: var(--cream-dim); }
+
+  .meta{
+    display:flex; gap:16px; margin-top: 4px;
+    font-family:'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--cream-dim);
+  }
+  .meta b{ color: var(--cream); font-weight: 600; }
+  .meta .warn{ color: var(--coral); }
+
+  /* perforation divider */
+  .perf{
+    width: 0;
+    border-left: 2px dashed var(--line);
+    position: relative;
+  }
+  .perf::before, .perf::after{
+    content:"";
+    position:absolute; left:-9px;
+    width: 18px; height: 18px;
+    background: var(--bg);
+    border-radius: 50%;
+  }
+  .perf::before{ top: -9px; }
+  .perf::after{ bottom: -9px; }
+
+  .coupon-action{
+    width: 150px;
+    flex-shrink: 0;
+    display:flex; flex-direction: column;
+    align-items:center; justify-content:center;
+    gap: 6px;
+    padding: 14px;
+  }
+  .code{
+    font-family:'Space Mono', monospace;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: .04em;
+    color: var(--cream);
+    background: var(--bg-soft);
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px dashed var(--cream-dim);
+  }
+  .copy-btn{
+    font-family:'Space Grotesk', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    background: var(--coral);
+    color: #1a0e08;
+    border: none;
+    padding: 7px 14px;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: background .15s ease, transform .1s ease;
+  }
+  .copy-btn:hover{ background: var(--gold); }
+  .copy-btn:active{ transform: scale(0.96); }
+  .copy-btn.copied{ background: var(--green); color: #0e1a13; }
+
+  /* ---------- Footer note ---------- */
+  .note{
+    margin-top: 40px;
+    border-top: 1px dashed var(--line);
+    padding-top: 20px;
+    font-family:'Space Mono', monospace;
+    font-size: 11.5px;
+    color: var(--cream-dim);
+    line-height: 1.6;
+  }
+  .note b{ color: var(--coral); }
+
+  @media (max-width: 560px){
+    .coupon{ flex-direction: column; }
+    .perf{ border-left:none; border-top: 2px dashed var(--line); height:0; width:auto; }
+    .perf::before{ top:-9px; left: -9px; }
+    .perf::after{ top:-9px; left:auto; right:-9px; bottom:auto; }
+    .coupon-action{ width:auto; flex-direction:row; padding: 14px 20px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div>
+      <div class="eyebrow">Săn deal mỗi ngày</div>
+      <h1>Mã Giảm Giá<br><span>Shopee</span></h1>
+    </div>
+    <div class="updated"><span class="live-dot"></span>Cập nhật lúc <span id="updated-time"></span></div>
+  </header>
+
+  <div class="tabs" id="tabs">
+    <div class="tab active" data-filter="all">Tất cả</div>
+    <div class="tab" data-filter="toanshop">Toàn sàn</div>
+    <div class="tab" data-filter="freeship">Freeship</div>
+    <div class="tab" data-filter="shop">Voucher shop</div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="note">
+    <b>Cách thêm mã mới:</b> mở file này bằng trình soạn thảo (Notepad, VS Code...), tìm đến phần
+    <b>DANH SÁCH MÃ</b> ở cuối file, copy 1 khối <b>{ ... }</b> rồi sửa lại thông tin — không cần biết lập trình.
+    Lưu file lại là web hiển thị mã mới ngay.
+  </div>
+
+</div>
+
+<script>
+  // ============================================
+  //   Dữ liệu mã được crawler.py cập nhật tự động
+  //   vào file data.json nằm CÙNG THƯ MỤC với file này.
+  //   Web sẽ tự tải lại file đó mỗi khi có người mở trang.
+  // ============================================
+  let vouchers = [];
+
+  const typeLabel = { toanshop: "Toàn sàn", freeship: "Freeship", shop: "Voucher shop" };
+
+  function toDisplayFormat(raw) {
+    // Chuyển dữ liệu thô từ data.json (do crawler tạo) sang định dạng web hiển thị
+    return {
+      type: "toanshop",
+      percent: raw.percent,
+      desc: `Mã số ${raw.ma_so}${raw.da_dung_percent != null ? ` · đã dùng ${raw.da_dung_percent}%` : ""}`,
+      code: raw.code,
+      minOrder: "—",
+      expiresInHours: null
+    };
+  }
+
+  async function loadVouchers() {
+    try {
+      const res = await fetch("data.json?t=" + Date.now()); // ?t= để tránh cache cũ
+      const json = await res.json();
+      vouchers = (json.vouchers || []).map(toDisplayFormat);
+      if (json.cap_nhat_luc) {
+        const d = new Date(json.cap_nhat_luc);
+        document.getElementById("updated-time").textContent =
+          d.toLocaleTimeString("vi-VN", { hour: '2-digit', minute: '2-digit' });
+      }
+    } catch (err) {
+      console.error("Không đọc được data.json:", err);
+      document.getElementById("grid").innerHTML =
+        '<p style="color:var(--cream-dim);font-family:monospace;font-size:13px">Chưa có data.json — hãy chạy crawler.py trước, hoặc kiểm tra file có cùng thư mục với trang web không.</p>';
+    }
+  }
+
+  function renderVouchers(list) {
+    const grid = document.getElementById("grid");
+    grid.innerHTML = "";
+    if (list.length === 0) {
+      grid.innerHTML = '<p style="color:var(--cream-dim);font-family:monospace;font-size:13px">Chưa có mã nào được crawler tìm thấy.</p>';
+      return;
+    }
+    list.forEach(v => {
+      const expiring = v.expiresInHours != null && v.expiresInHours <= 6;
+      const card = document.createElement("div");
+      card.className = "coupon" + (expiring ? " expiring" : "");
+      card.innerHTML = `
+        <div class="coupon-main">
+          <div class="coupon-top">
+            <span class="tag ${v.type}">${typeLabel[v.type]}</span>
+            <span class="percent">${v.percent}</span>
+          </div>
+          <div class="desc">${v.desc}</div>
+          <div class="meta">
+            ${v.expiresInHours != null ? `<span class="${expiring ? 'warn' : ''}">Còn <b>${v.expiresInHours}h</b></span>` : ''}
+          </div>
+        </div>
+        <div class="perf"></div>
+        <div class="coupon-action">
+          <div class="code">${v.code}</div>
+          <button class="copy-btn">Sao chép mã</button>
+        </div>
+      `;
+      card.querySelector(".copy-btn").addEventListener("click", function(){
+        navigator.clipboard.writeText(v.code).then(() => {
+          this.textContent = "Đã sao chép ✓";
+          this.classList.add("copied");
+          setTimeout(() => {
+            this.textContent = "Sao chép mã";
+            this.classList.remove("copied");
+          }, 1500);
+        });
+      });
+      grid.appendChild(card);
+    });
+  }
+
+  // Filter tabs
+  document.getElementById("tabs").addEventListener("click", (e) => {
+    if (!e.target.classList.contains("tab")) return;
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+    e.target.classList.add("active");
+    const filter = e.target.dataset.filter;
+    const filtered = filter === "all" ? vouchers : vouchers.filter(v => v.type === filter);
+    renderVouchers(filtered);
+  });
+
+  // Tải dữ liệu từ data.json khi mở trang
+  loadVouchers().then(() => renderVouchers(vouchers));
+</script>
+</body>
+</html>
